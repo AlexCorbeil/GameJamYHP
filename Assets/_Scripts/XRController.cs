@@ -10,8 +10,8 @@ public class XRController : MonoBehaviour
 {
     [SerializeField] public const string appId = "0uilg8";
     [SerializeField] public const string apiUrl = "https://xr.wonderlab.cloud";
+    [SerializeField] public const string appVersion = "1.0.0";
     [SerializeField] string sessionTicket;
-    [SerializeField] string customId;
 
     public void Auth(string customId, ApiResponse OnSuccess) {
         Dictionary<string, string> data = new Dictionary<string, string>();
@@ -47,6 +47,8 @@ public class XRController : MonoBehaviour
             if(!string.IsNullOrEmpty(sessionTicket)) {
                 www.SetRequestHeader("X-Authentication", sessionTicket);
             }
+
+            www.SetRequestHeader("X-App-Version", appVersion);
 
             yield return www.SendWebRequest();
 

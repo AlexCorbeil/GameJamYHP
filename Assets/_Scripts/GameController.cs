@@ -12,6 +12,10 @@ public class GameController : MonoBehaviour {
     [SerializeField] TMP_InputField loginName;
     [SerializeField] TMP_Text errorText;
 
+    [SerializeField] GameObject missionPref;
+
+    List<Mission> missions = new List<Mission>();
+
     string customId;
 
     private void Awake() {
@@ -47,16 +51,27 @@ public class GameController : MonoBehaviour {
 
     void OnAuth(JObject response) {
         //TODO: Load Inventory
-        //TODO: Load Missions
+        LoadMissions();
         errorText.text = $"Welcome {customId}!";
         PlayerPrefs.SetString("CustomID", customId);
         Debug.Log(response["data"]["LoginResult"]["PlayFabId"].Value<string>());
     }
 
+    void LoadMissions() {
+        xrController.Client("GetMissionCatalog", null, OnMissionsLoaded);
+    }
 
-    string GenerateID() {
-        string id = System.Guid.NewGuid().ToString();
-        PlayerPrefs.SetString("CustomID", id.ToString());
-        return id;
+    void OnMissionsLoaded(JObject response) {
+        
+        foreach (JObject job in response["data"]["missions"]["PlayerMissions"]) {
+            GameObject missionGo = Instantiate(missionPref) as GameObject;
+            Mission mission = missionGo.GetComponent<Mission>();
+
+            mission.id = job["itemId"].Value<string>();
+            mission.title = job["playfab"]["DisplayName"].Value<string>();
+
+            missions.Add(mission);
+        }
+
     }
 }
