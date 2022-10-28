@@ -10,8 +10,7 @@ public class ImageSelector : MonoBehaviour
     float initialXPos = 0f;
 
     private void Start() {
-        TriggerImage.choseImage += ClearImages;
-        TriggerImage.choseImage += RefreshImages;
+        //TriggerImage.choseImage += RefreshImages;
     }
 
     public void ShowImageSet() {
@@ -30,13 +29,15 @@ public class ImageSelector : MonoBehaviour
 
     List<GameObject> ChooseThreeImages() {
         int imgNum = 0;
-        
 
-        while (imgNum < 3) {
-            int randIndex = Random.Range(0, triggerImages.Count);
-            chosenImages.Add(triggerImages[randIndex]);
-            triggerImages.RemoveAt(randIndex);
-            imgNum++;
+        if (triggerImages.Count > 0) {
+
+            while (imgNum < 3) {
+                int randIndex = Random.Range(0, triggerImages.Count);
+                chosenImages.Add(triggerImages[randIndex]);
+                triggerImages.RemoveAt(randIndex);
+                imgNum++;
+            }
         }
 
         return chosenImages;
@@ -52,7 +53,8 @@ public class ImageSelector : MonoBehaviour
         }
     }
 
-    void RefreshImages() {
+    public void RefreshImages() {
+        ClearImages();
         DestroyInstantiatedChildren();
         ShowImageSet();
     }

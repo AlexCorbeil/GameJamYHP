@@ -8,8 +8,8 @@ using UnityEngine.UI;
 [Serializable]
 public class TriggerImage : MonoBehaviour
 {
-    public delegate void OnImageChosen();
-    public static OnImageChosen choseImage;
+    //public delegate void OnImageChosen();
+    //public static OnImageChosen choseImage;
 
     [SerializeField] string imgName;
     RectTransform imgTransform;
@@ -28,7 +28,8 @@ public class TriggerImage : MonoBehaviour
 
     public void Choose() {
         Unselect();
-        choseImage();
+        //choseImage();
+        GameController.instance.SendMissionInput(imgName, GameController.instance.UpdateObjective());
         Debug.Log($"You've chosen {imgName}");
     }
 }

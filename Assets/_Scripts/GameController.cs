@@ -15,9 +15,13 @@ public class GameController : MonoBehaviour {
 
     [SerializeField] CanvasFader loginMenuFader;
     [SerializeField] CanvasFader mainMenuFader;
+    [SerializeField] ImageSelector imgSelector;
 
     public List<Mission> missions = new List<Mission>();
     public List<Badge> badges = new List<Badge>();
+
+    public string actualObj;
+    int counter = 0;
 
     string customId;
 
@@ -27,6 +31,8 @@ public class GameController : MonoBehaviour {
         } else {
             Destroy(gameObject);
         }
+
+
     }
 
     void Start() {
@@ -70,13 +76,18 @@ public class GameController : MonoBehaviour {
     }
 
     void OnMissionsLoaded(JObject response) {
+
+        missions.Clear();
         
         foreach (JObject job in response["data"]["missions"]["PlayerMissions"]) {
             Mission mission = new Mission();
 
             mission.id = job["itemId"].Value<string>();
             mission.title = job["playfab"]["DisplayName"].Value<string>();
-
+            
+            foreach(JObject jobObj in job["objectives"]) {
+                mission.objIds.Add(jobObj["id"].Value<string>());
+            }
             missions.Add(mission);
 
             Debug.Log(mission.id + " " + mission.title);
@@ -88,6 +99,8 @@ public class GameController : MonoBehaviour {
     }
 
     void OnInventoryLoaded(JObject response) {
+        badges.Clear();
+
         foreach(JObject job in response["data"]["items"]) {
             Badge badge = new Badge();
 
@@ -100,5 +113,35 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    
+    public void SendMissionInput(string objInput, string objId) {
+        Dictionary<string, string> param = new Dictionary<string, string>();
+        param.Add("ItemId", "m-1666904646832-494");
+        param.Add("Input", objInput);
+        param.Add("ObjectiveId", objId);
+        xrController.Client("SendMissionInput", param, OnMissionInputSent);
+    }
+
+    void OnMissionInputSent(JObject response) {
+        LoadInventory();
+        LoadMissions();
+        imgSelector.RefreshImages();
+    }
+
+    public string UpdateObjective() {
+
+        string objectiveId = string.Empty;
+
+        foreach (Mission m in missions) {
+            if (m.id == "m-1666904646832-494") {
+                objectiveId = m.objIds[counter];
+            }
+
+        }
+
+        counter++;
+
+        Debug.Log(objectiveId);
+
+        return objectiveId;
+    }
 }
