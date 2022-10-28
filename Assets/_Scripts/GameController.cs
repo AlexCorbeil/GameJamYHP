@@ -11,8 +11,10 @@ public class GameController : MonoBehaviour {
     public XRController xrController;
     [SerializeField] TMP_InputField loginName;
     [SerializeField] TMP_Text errorText;
+    [SerializeField] public TMP_Text welcomeText;
 
     [SerializeField] CanvasFader loginMenuFader;
+    [SerializeField] CanvasFader mainMenuFader;
 
     public List<Mission> missions = new List<Mission>();
     public List<Badge> badges = new List<Badge>();
@@ -27,7 +29,7 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    public void Start() {
+    void Start() {
         customId = PlayerPrefs.GetString("CustomID");
 
         if (!string.IsNullOrEmpty(customId)) {
@@ -35,6 +37,7 @@ public class GameController : MonoBehaviour {
         }
 
         errorText.text = string.Empty;
+        welcomeText.text = string.Empty;
     }
 
     public void Login() {
@@ -53,12 +56,16 @@ public class GameController : MonoBehaviour {
     void OnAuth(JObject response) {
         LoadInventory();
         LoadMissions();
-        errorText.text = $"Welcome {customId}!";
+        welcomeText.text = $"Welcome {customId}!";
         PlayerPrefs.SetString("CustomID", customId);
         Debug.Log(response["data"]["LoginResult"]["PlayFabId"].Value<string>());
+
+        loginMenuFader.FadeOut(0f, 1f);
+        mainMenuFader.MoveTo(0f, -40f, 0f, 0f, 0f, 1.5f);
+        mainMenuFader.FadeIn(0f, 1.5f);
     }
 
-    void LoadMissions() {
+    public void LoadMissions() {
         xrController.Client("GetMissionInventory", null, OnMissionsLoaded);
     }
 
@@ -76,7 +83,7 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    void LoadInventory() {
+    public void LoadInventory() {
         xrController.Client("GetItemInventory", null, OnInventoryLoaded);
     }
 
@@ -92,4 +99,6 @@ public class GameController : MonoBehaviour {
             Debug.Log(badge.id + " " + badge.title);
         }
     }
+
+    
 }
