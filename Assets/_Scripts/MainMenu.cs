@@ -13,7 +13,7 @@ public class MainMenu : MonoBehaviour
         imageSelectionMenu.FadeIn(0f, 1f);
 
         imageSelector.ShowImageSet();
-        GameController.instance.welcomeText.text = "Choose a first image.";
+        GameController.instance.welcomeText.text = "Choose an image.";
     }
 
     public void ShowMainMenu() {

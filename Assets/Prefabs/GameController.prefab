@@ -53,4 +53,6 @@ MonoBehaviour:
   imgSelector: {fileID: 0}
   missions: []
   badges: []
+  resultImage: {fileID: 0}
+  resultImageName: 
   actualObj: 

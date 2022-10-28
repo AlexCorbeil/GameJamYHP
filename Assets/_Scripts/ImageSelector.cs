@@ -19,7 +19,6 @@ public class ImageSelector : MonoBehaviour
         chosenImages = ChooseThreeImages();
 
         foreach(GameObject image in chosenImages) {
-            Debug.Log("Spawning Image");
             Instantiate(image, new Vector3(transform.parent.position.x + initialXPos, transform.position.y, transform.position.z), transform.rotation, gameObject.transform);
             initialXPos += imageOffset;
         }
@@ -38,6 +37,8 @@ public class ImageSelector : MonoBehaviour
                 triggerImages.RemoveAt(randIndex);
                 imgNum++;
             }
+        } else {
+            GameController.instance.PreferedImage();
         }
 
         return chosenImages;
@@ -57,5 +58,9 @@ public class ImageSelector : MonoBehaviour
         ClearImages();
         DestroyInstantiatedChildren();
         ShowImageSet();
+    }
+
+    public void ShowResultImage() {
+
     }
 }

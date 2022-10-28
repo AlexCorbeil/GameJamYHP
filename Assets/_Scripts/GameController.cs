@@ -19,6 +19,9 @@ public class GameController : MonoBehaviour {
 
     public List<Mission> missions = new List<Mission>();
     public List<Badge> badges = new List<Badge>();
+    public ResultImage resultImage;
+
+    public string resultImageName;
 
     public string actualObj;
     int counter = 0;
@@ -32,6 +35,7 @@ public class GameController : MonoBehaviour {
             Destroy(gameObject);
         }
 
+        resultImageName = string.Empty;
 
     }
 
@@ -143,5 +147,29 @@ public class GameController : MonoBehaviour {
         Debug.Log(objectiveId);
 
         return objectiveId;
+    }
+
+    public void ComingSoon() {
+        welcomeText.text = "Coming soon!";
+    }
+
+    public void PreferedImage() {
+        xrController.Client("GetPlayerStatistics", null, OnLoadStatistics);
+    }
+
+    void OnLoadStatistics(JObject response) {
+        
+        int valeur = 0;
+
+        foreach (JObject stats in response["data"]["Statistics"]) {
+            if (stats["Value"].Value<int>() > valeur) {
+                valeur = stats["Value"].Value<int>();
+                resultImageName = stats["StatisticName"].Value<string>();
+                resultImageName = resultImageName.ToLower();
+            }
+        }
+
+        resultImage.SetResultImage();
+        welcomeText.text = "Here's an image tailored for your Vuse!";
     }
 }

@@ -28,8 +28,6 @@ public class TriggerImage : MonoBehaviour
 
     public void Choose() {
         Unselect();
-        //choseImage();
         GameController.instance.SendMissionInput(imgName, GameController.instance.UpdateObjective());
-        Debug.Log($"You've chosen {imgName}");
     }
 }
