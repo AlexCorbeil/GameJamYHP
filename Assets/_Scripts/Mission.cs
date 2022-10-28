@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class Mission : MonoBehaviour {
+public class Mission {
     public string id;
     public string title;
 

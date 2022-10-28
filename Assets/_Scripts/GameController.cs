@@ -12,9 +12,10 @@ public class GameController : MonoBehaviour {
     [SerializeField] TMP_InputField loginName;
     [SerializeField] TMP_Text errorText;
 
-    [SerializeField] GameObject missionPref;
+    [SerializeField] CanvasFader loginMenuFader;
 
-    List<Mission> missions = new List<Mission>();
+    public List<Mission> missions = new List<Mission>();
+    public List<Badge> badges = new List<Badge>();
 
     string customId;
 
@@ -50,7 +51,7 @@ public class GameController : MonoBehaviour {
     }
 
     void OnAuth(JObject response) {
-        //TODO: Load Inventory
+        LoadInventory();
         LoadMissions();
         errorText.text = $"Welcome {customId}!";
         PlayerPrefs.SetString("CustomID", customId);
@@ -58,20 +59,37 @@ public class GameController : MonoBehaviour {
     }
 
     void LoadMissions() {
-        xrController.Client("GetMissionCatalog", null, OnMissionsLoaded);
+        xrController.Client("GetMissionInventory", null, OnMissionsLoaded);
     }
 
     void OnMissionsLoaded(JObject response) {
         
         foreach (JObject job in response["data"]["missions"]["PlayerMissions"]) {
-            GameObject missionGo = Instantiate(missionPref) as GameObject;
-            Mission mission = missionGo.GetComponent<Mission>();
+            Mission mission = new Mission();
 
             mission.id = job["itemId"].Value<string>();
             mission.title = job["playfab"]["DisplayName"].Value<string>();
 
             missions.Add(mission);
-        }
 
+            Debug.Log(mission.id + " " + mission.title);
+        }
+    }
+
+    void LoadInventory() {
+        xrController.Client("GetItemInventory", null, OnInventoryLoaded);
+    }
+
+    void OnInventoryLoaded(JObject response) {
+        foreach(JObject job in response["data"]["items"]) {
+            Badge badge = new Badge();
+
+            badge.id = job["itemId"].Value<string>();
+            badge.title = job["publicData"]["Title"].Value<string>();
+
+            badges.Add(badge);
+
+            Debug.Log(badge.id + " " + badge.title);
+        }
     }
 }
