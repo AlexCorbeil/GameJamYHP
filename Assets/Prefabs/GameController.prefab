@@ -47,3 +47,10 @@ MonoBehaviour:
   xrController: {fileID: 0}
   loginName: {fileID: 0}
   errorText: {fileID: 0}
+  welcomeText: {fileID: 0}
+  loginMenuFader: {fileID: 0}
+  mainMenuFader: {fileID: 0}
+  imgSelector: {fileID: 0}
+  missions: []
+  badges: []
+  actualObj: 
